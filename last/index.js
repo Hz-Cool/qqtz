@@ -33,7 +33,7 @@ var log = {
 };
 // 发帖
 function post(signal) {
-  let verify = PostParms.verifyhash;
+  let verify = PostParms.verifyhash || '82c0f119';
   let nowtime = new Date().getTime();
   let fid = 30;
   let tid = PostParms.tid;
@@ -47,6 +47,26 @@ function post(signal) {
   //文章分类
   formData.append("step", 2);
   formData.append("type", "ajax_addfloor");
+
+  // 网站规则变更21-07-28
+  formData.append("magicname", "");
+  formData.append("magicid", "");
+  formData.append("verify", verify);
+  formData.append("cyid", 0);
+  formData.append("ajax", 1);
+  formData.append("iscontinue", 0);
+  formData.append("usernames", "");
+  formData.append("atc_money", "");
+  formData.append("atc_rvrc", "");
+  formData.append("atc_usesign", "");
+  formData.append("atc_convert", "");
+  formData.append("pid", "");
+  formData.append("fid", fid);
+  formData.append("tid", tid);
+  formData.append("article", "");
+  formData.append("special", "");
+
+
 
   let headers = {
     Cookie: PostParms.Cookie,
@@ -65,11 +85,14 @@ function post(signal) {
   }
   return fetch(`http://goodbye.qqtz.com/post.php?fid=${fid}&nowtime=${nowtime}&verify=${verify}`, payload);
 }
+// 发帖集合
+var tidList = ['5079072', '5079073', '5079074'];
 // 并发发送
 function send() {
   console.log('Start---');
   let array = [];
   log.counter++;
+  PostParms.tid = tidList[Math.floor(Math.random() * 3)];
   let time = new Date().getTime();
   const controller = new AbortController();
   // 并发请求
@@ -77,32 +100,32 @@ function send() {
     let p = post(controller.signal);
     // 100%不会进入then Math.random() * 100 > 101
     // if (false) {
-    //   p.then(function (res) {
-    //     return res.buffer();
-    //   }).then(function (res) {
-    //     let body = iconv.decode(Buffer.concat([res]), "Glog");
-    //     if (body.indexOf("回复帖子，奖励积分") > -1) {
-    //       console.log("🚀 ~ 回复帖子，奖励积分");
-    //     } else if (body.indexOf('<a href="u.php?uid=86666">知鱼之乐</a>') > -1) {
-    //       console.log("🚀 ~ 知鱼之乐");
-    //     } else if (body.indexOf("用户密码已更改 或 站点开启了安全认证 , 需要重新登录")) {
-    //       console.log("🚀 ~ 用户密码已更改 或 站点开启了安全认证 , 需要重新登录");
-    //     } else {
-    //       // const fs = require("fs");
-    //       // const path = require("path");
-    //       // let file = path.resolve(__dirname, "./1.html");
-    //       //fs.appendFile(file, body, { encoding: "utf8" }, (err) => { });
-    //       console.log("错误");
-    //     }
-    //   });
+    p.then(function (res) {
+      return res.buffer();
+    }).then(function (res) {
+      let body = iconv.decode(Buffer.concat([res]), "Glog");
+      if (body.indexOf("回复帖子，奖励积分") > -1) {
+        console.log("🚀 ~ 回复帖子，奖励积分");
+      } else if (body.indexOf('<a href="u.php?uid=86666">知鱼之乐</a>') > -1) {
+        console.log("🚀 ~ 知鱼之乐");
+      } else if (body.indexOf("用户密码已更改 或 站点开启了安全认证 , 需要重新登录")) {
+        console.log("🚀 ~ 用户密码已更改 或 站点开启了安全认证 , 需要重新登录");
+      } else {
+        // const fs = require("fs");
+        // const path = require("path");
+        // let file = path.resolve(__dirname, "./1.html");
+        //fs.appendFile(file, body, { encoding: "utf8" }, (err) => { });
+        console.log("错误");
+      }
+    });
     // }
     array.push(p);
   }
   // 超时整个队列中断
   let timeout;
-  timeout = setTimeout(() => {
-    controller.abort();
-  }, batchTimeout);
+  // timeout = setTimeout(() => {
+  //   controller.abort();
+  // }, batchTimeout);
 
   Promise.all(array).then(() => {
     log.sendCount += batchCounter;
