@@ -8,7 +8,7 @@ V2,作用于浏览器上的插件
 
 Cookie、Headers、Body 都是可以被复制拿到
 
-![RUNOOB 图标](../../img/copy.png)
+![](../img/copy.png)
 
 比如点击 Copy as fetch 后，粘贴在控制台即可发送请求
 

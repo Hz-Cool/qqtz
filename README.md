@@ -26,4 +26,6 @@ QQTZ 是年少时的回忆
 
 <br>
 
- [Last目录](./last)
+> 最后更新
+
+[Last目录](./last)
