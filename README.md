@@ -1,12 +1,11 @@
 # QQTZ
 
+## 通过[ECS+对象存储]实现对QQTZ论坛DDOS式的发帖
+
 - [QQTZ：一个水怪的进化之旅](http://hz-cool.minihenshang.cn/views/creations/qqtz/2100802.html#%E5%8A%9F%E8%83%BD%E6%A8%A1%E5%9D%97)
 
 > 最后更新
 [Last目录](./last)
-
-`作用于ECS上的NodeJS程序`
-
 
 这次有点类似于微服务的味道
 
